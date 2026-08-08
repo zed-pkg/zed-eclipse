@@ -17,7 +17,10 @@
     "problemsMarkerProjection": true,
     "versionedInspectAdapter": "pending-zed-cli-191",
     "nativeUnitTests": true,
-    "repoLocalCI": true
+    "repoLocalCI": true,
+    "immutableWorkflowInputs": true,
+    "fixedRunnerImages": true,
+    "checkoutCredentialsPersisted": false
   },
   "remaining": ["PDE/OSGi bundle", "Zed Packages view", "workspace resource listeners", "quick-fix UI wiring", "Eclipse application test", "p2 update site"],
   "linearIssue": "DEN-2508"
