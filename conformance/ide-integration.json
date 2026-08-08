@@ -1,0 +1,27 @@
+{
+  "schema": "zed-pkg/ide-integration-conformance/v1",
+  "integration": "eclipse",
+  "repository": "zed-pkg/zed-eclipse",
+  "contractVersion": 1,
+  "level": {"core": "pass", "nativeShell": "workspace-marker-model", "distribution": "repository"},
+  "capabilities": {
+    "multiRootDiscovery": "workspace-model",
+    "manifestDiagnostics": true,
+    "lockDiagnostics": true,
+    "materializationDiagnostics": true,
+    "stagingRecovery": true,
+    "argvExecution": true,
+    "boundedExecution": true,
+    "outputRedaction": true,
+    "explicitMutationConfirmation": true,
+    "problemsMarkerProjection": true,
+    "versionedInspectAdapter": "pending-zed-cli-191",
+    "nativeUnitTests": true,
+    "repoLocalCI": true,
+    "immutableWorkflowInputs": true,
+    "fixedRunnerImages": true,
+    "checkoutCredentialsPersisted": false
+  },
+  "remaining": ["PDE/OSGi bundle", "Zed Packages view", "workspace resource listeners", "quick-fix UI wiring", "Eclipse application test", "p2 update site"],
+  "linearIssue": "DEN-2508"
+}
