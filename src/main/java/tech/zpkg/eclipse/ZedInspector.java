@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.nio.file.InvalidPathException;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -53,6 +54,16 @@ public final class ZedInspector {
 
     Report validateReport(Report report, Path root) {
         if (report == null || report.schemaVersion() != 1) return failed(root, "Unsupported Zed inspection schema; expected schemaVersion 1.");
+        // The CLI cannot substitute diagnostics or actions for an unrelated workspace.
+        var expectedRoot = root.toAbsolutePath().normalize();
+        try {
+            if (report.workspaceRoot() == null) return failed(expectedRoot, "Zed inspection workspace root is missing.");
+            var reportedRoot = Path.of(report.workspaceRoot());
+            if (!reportedRoot.isAbsolute() || !reportedRoot.normalize().equals(expectedRoot))
+                return failed(expectedRoot, "Zed inspection reported a different workspace root.");
+        } catch (InvalidPathException malformed) {
+            return failed(expectedRoot, "Zed inspection reported an invalid workspace root.");
+        }
         for (var issue : safe(report.issues())) for (var action : safe(issue.actions()))
             if ("command".equals(action.kind()) && !action.requiresConfirmation())
                 return failed(root, "Rejected unsafe command action '" + action.id() + "': command actions must require explicit confirmation.");
