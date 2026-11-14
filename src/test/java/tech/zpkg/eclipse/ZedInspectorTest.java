@@ -24,4 +24,16 @@ class ZedInspectorTest {
         var rejected = inspector.validateReport(unsafe, root);
         assertEquals("inspect.failed", rejected.issues().getFirst().id()); assertFalse(rejected.issues().getFirst().detail().contains("token=x"));
     }
+    @Test void rejectsMismatchedAndRelativeWorkspaceRoots() {
+        var inspector = new ZedInspector();
+        var root = Path.of("workspace").toAbsolutePath().normalize();
+        var forged = new ZedInspector.Report(1, root.resolveSibling("outside").toString(), null, List.of());
+        var rejected = inspector.validateReport(forged, root);
+        assertEquals(root.toString(), rejected.workspaceRoot());
+        assertEquals("inspect.failed", rejected.issues().getFirst().id());
+        var relative = new ZedInspector.Report(1, "workspace", null, List.of());
+        assertEquals("inspect.failed", inspector.validateReport(relative, root).issues().getFirst().id());
+        var normalized = new ZedInspector.Report(1, root.resolve("child").resolve("..").toString(), null, List.of());
+        assertTrue(inspector.validateReport(normalized, root).issues().isEmpty());
+    }
 }
